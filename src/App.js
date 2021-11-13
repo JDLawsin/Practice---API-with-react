@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { Container, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+
+    fetch('https://valorant-api.com/v1/agents')
+      .then(response => response.json())
+      .then(data => setData(data));
+      
+  },[]);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container >
+      {
+        data != null ?  
+          data.data.map(data => {
+            return (
+              <Card key={data.uuid}>
+                <CardMedia component="img" src={data.bustPortrait} />
+                <CardContent>
+                  <Typography variant="h5" component="div">{data.displayName}</Typography>
+                  <Typography variant="body2" color="text.secondary">{ data.description }</Typography>
+                </CardContent>
+              </Card>
+            )
+          })
+        : console.warn("empty!")
+      }
+    </Container>
   );
 }
 
